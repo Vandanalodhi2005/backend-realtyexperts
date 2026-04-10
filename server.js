@@ -10,7 +10,7 @@ connectDB();
 const app = express();
 
 const corsOptions = {
-    origin: ['https://therealtyxpert.netlify.app/', 'http://localhost:5173'],
+    origin: ['https://therealtyxpert.netlify.app/', 'http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
