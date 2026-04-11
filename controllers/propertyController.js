@@ -46,10 +46,15 @@ const createProperty = async(req, res) => {
         const images = [];
         if (req.files && req.files.length > 0) {
             for (const file of req.files) {
-                const result = await cloudinary.uploader.upload(`data:${file.mimetype};base64,${file.buffer.toString('base64')}`, {
-                    folder: 'properties',
-                });
-                images.push(result.secure_url);
+                try {
+                    const result = await cloudinary.uploader.upload(`data:${file.mimetype};base64,${file.buffer.toString('base64')}`, {
+                        folder: 'properties',
+                    });
+                    images.push(result.secure_url);
+                } catch (imgError) {
+                    console.error('Cloudinary upload error:', imgError);
+                    return res.status(400).json({ message: 'Error uploading images to Cloudinary', error: imgError.message });
+                }
             }
         }
         propertyData.images = images;
@@ -59,7 +64,10 @@ const createProperty = async(req, res) => {
         res.status(201).json(property);
     } catch (error) {
         console.error('Error creating property:', error);
-        res.status(500).json({ message: 'Error creating property' });
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ message: 'Validation Error', errors: error.errors });
+        }
+        res.status(500).json({ message: 'Internal Server Error', error: error.message });
     }
 };
 

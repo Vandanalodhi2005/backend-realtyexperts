@@ -27,7 +27,7 @@ const propertySchema = new mongoose.Schema({
     },
     transaction: {
         type: String,
-        enum: ['', 'sale', 'rent'],
+        enum: ['', 'new', 'resale'],
         default: ''
     },
     furnishing: {
