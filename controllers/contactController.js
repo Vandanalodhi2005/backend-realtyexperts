@@ -1,4 +1,5 @@
 const Contact = require('../models/Contact');
+const { sendEmailNotification } = require('../utils/emailService');
 
 const getAllContacts = async(req, res) => {
     try {
@@ -23,8 +24,6 @@ const getContactById = async(req, res) => {
     }
 };
 
-const nodemailer = require('nodemailer');
-
 const createContact = async(req, res) => {
     try {
         const { name, email, phone, message, propertyId, propertyTitle } = req.body;
@@ -43,29 +42,17 @@ const createContact = async(req, res) => {
         const contact = new Contact(contactData);
         await contact.save();
 
-        // Email Sending Logic
-        const transporter = nodemailer.createTransport({
-            service: 'gmail', // You can change service as needed
-            auth: {
-                user: process.env.EMAIL_USER || 'your_email@gmail.com',
-                pass: process.env.EMAIL_PASS || 'your_email_app_password',
-            },
-        });
+        // Send Email Notification
+        const emailSubject = isPropertyInquiry ? `New Property Inquiry: ${propertyTitle}` : 'New General Contact Inquiry';
+        const emailHtml = `
+            <h3>New Inquiry from ${name}</h3>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Phone:</strong> ${phone}</p>
+            <p><strong>Message:</strong></p>
+            <p>${finalMessage.replace(/\n/g, '<br>')}</p>
+        `;
 
-        const mailOptions = {
-            from: process.env.EMAIL_USER || 'your_email@gmail.com',
-            to: process.env.ADMIN_EMAIL || process.env.EMAIL_USER || 'sunriseproperties@gmail.com',
-            subject: isPropertyInquiry ? `New Property Inquiry: ${propertyTitle}` : 'New General Contact Inquiry',
-            text: `You have received a new message from ${name}.\n\nContact Details:\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\n\nMessage:\n${finalMessage}`,
-        };
-
-        try {
-            await transporter.sendMail(mailOptions);
-            console.log('Email sent successfully');
-        } catch (emailError) {
-            console.error('Error sending email:', emailError);
-            // We still want to return success to the user even if email fails, because it's saved in DB
-        }
+        await sendEmailNotification(emailSubject, emailHtml);
 
         res.status(201).json({
             message: 'Message sent successfully',

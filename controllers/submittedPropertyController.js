@@ -1,4 +1,5 @@
 const SubmittedProperty = require('../models/SubmittedProperty');
+const { sendEmailNotification } = require('../utils/emailService');
 
 const createSubmittedProperty = async (req, res) => {
     try {
@@ -10,6 +11,23 @@ const createSubmittedProperty = async (req, res) => {
 
         const submittedProperty = new SubmittedProperty(propertyData);
         await submittedProperty.save();
+
+        // Send Email Notification
+        const emailSubject = `New Property Submission: ${propertyData.title}`;
+        const emailHtml = `
+            <h3>New Property Submission for Analysis</h3>
+            <p><strong>Owner Name:</strong> ${propertyData.contactName}</p>
+            <p><strong>Owner Email:</strong> ${propertyData.contactEmail}</p>
+            <p><strong>Owner Phone:</strong> ${propertyData.contactPhone}</p>
+            <p><strong>Property Title:</strong> ${propertyData.title}</p>
+            <p><strong>Category:</strong> ${propertyData.category}</p>
+            <p><strong>Price Requested:</strong> ₹${propertyData.price?.toLocaleString() || 'N/A'}</p>
+            <p><strong>Location:</strong> ${propertyData.location}</p>
+            <p><strong>Details:</strong> ${propertyData.message || 'No description provided'}</p>
+        `;
+
+        await sendEmailNotification(emailSubject, emailHtml);
+
         res.status(201).json({ message: 'Property submitted successfully', submittedProperty });
     } catch (error) {
         console.error('Error submitting property:', error);

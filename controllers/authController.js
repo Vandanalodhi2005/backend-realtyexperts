@@ -5,11 +5,12 @@ const Contact = require('../models/Contact');
 const Investment = require('../models/Investment');
 const Project = require('../models/Project');
 const SubmittedProperty = require('../models/SubmittedProperty');
+const Gallery = require('../models/Gallery');
 
 // In-memory admin credentials (replace with database in production)
 const adminCredentials = {
-    username: 'admin',
-    password: bcrypt.hashSync('admin123', 10) // Hashed password
+    username: 'vandana',
+    password: bcrypt.hashSync('vandana24', 10) // Hashed password
 };
 
 const login = async(req, res) => {
@@ -52,6 +53,7 @@ const getDashboard = async(req, res) => {
         const totalProjects = await Project.countDocuments();
         const totalSubmissions = await SubmittedProperty.countDocuments();
         const pendingSubmissions = await SubmittedProperty.countDocuments({ status: 'pending' });
+        const totalGallery = await Gallery.countDocuments();
 
         // Get recent properties (last 30 days)
         const thirtyDaysAgo = new Date();
@@ -70,6 +72,7 @@ const getDashboard = async(req, res) => {
                 totalProjects,
                 totalSubmissions,
                 pendingSubmissions,
+                totalGallery,
                 revenue: 0
             }
         });

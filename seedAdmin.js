@@ -10,7 +10,7 @@ const seedAdmin = async () => {
         await connectDB();
 
         // Check if admin already exists
-        const adminExists = await Admin.findOne({ username: 'admin' });
+        const adminExists = await Admin.findOne({ username: 'vandana' });
 
         if (adminExists) {
             console.log('Admin already exists');
@@ -18,8 +18,8 @@ const seedAdmin = async () => {
         }
 
         const admin = new Admin({
-            username: 'admin',
-            password: 'admin@123'
+            username: 'vandana',
+            password: 'vandana24'
         });
 
         await admin.save();
