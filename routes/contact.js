@@ -1,5 +1,5 @@
 const express = require('express');
-const { getAllContacts, getContactById, createContact, updateContactStatus } = require('../controllers/contactController');
+const { getAllContacts, getContactById, createContact, updateContactStatus, deleteContact } = require('../controllers/contactController');
 const { verifyAdminToken } = require('../middleware/auth');
 
 const router = express.Router();
@@ -11,5 +11,6 @@ router.post('/', createContact);
 router.get('/', verifyAdminToken, getAllContacts);
 router.get('/:id', verifyAdminToken, getContactById);
 router.put('/:id/status', verifyAdminToken, updateContactStatus);
+router.delete('/:id', verifyAdminToken, deleteContact);
 
 module.exports = router;

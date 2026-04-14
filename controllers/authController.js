@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Admin = require('../models/Admin');
 const Property = require('../models/Property');
 const Contact = require('../models/Contact');
 const Investment = require('../models/Investment');
@@ -7,38 +8,63 @@ const Project = require('../models/Project');
 const SubmittedProperty = require('../models/SubmittedProperty');
 const Gallery = require('../models/Gallery');
 
-// In-memory admin credentials (replace with database in production)
-const adminCredentials = {
-    username: 'vandana',
-    password: bcrypt.hashSync('vandana24', 10) // Hashed password
-};
-
 const login = async(req, res) => {
     try {
         const { username, password } = req.body;
 
-        if (username !== adminCredentials.username) {
+        const admin = await Admin.findOne({ username });
+        if (!admin) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        const isPasswordValid = await bcrypt.compare(password, adminCredentials.password);
+        const isPasswordValid = await admin.matchPassword(password);
         if (!isPasswordValid) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
         // Generate JWT token
-        const token = jwt.sign({ username: adminCredentials.username, role: 'admin' },
+        const token = jwt.sign({ id: admin._id, username: admin.username, role: 'admin' },
             process.env.JWT_SECRET || 'your-secret-key', { expiresIn: '24h' }
         );
 
         res.json({
             message: 'Login successful',
             token,
-            user: { username: adminCredentials.username, role: 'admin' }
+            user: { username: admin.username, role: 'admin' }
         });
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+const updateAdminSettings = async(req, res) => {
+    try {
+        const { newUsername, newPassword } = req.body;
+        const adminId = req.admin.id;
+
+        const admin = await Admin.findById(adminId);
+        if (!admin) {
+            return res.status(404).json({ message: 'Admin not found' });
+        }
+
+        if (newUsername) {
+            admin.username = newUsername;
+        }
+
+        if (newPassword) {
+            admin.password = newPassword;
+        }
+
+        await admin.save();
+
+        res.json({
+            message: 'Settings updated successfully',
+            user: { username: admin.username, role: 'admin' }
+        });
+    } catch (error) {
+        console.error('Update settings error:', error);
+        res.status(500).json({ message: 'Error updating settings' });
     }
 };
 
@@ -82,4 +108,4 @@ const getDashboard = async(req, res) => {
     }
 };
 
-module.exports = { login, getDashboard };
+module.exports = { login, getDashboard, updateAdminSettings };

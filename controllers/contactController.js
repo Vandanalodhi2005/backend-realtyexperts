@@ -81,4 +81,17 @@ const updateContactStatus = async(req, res) => {
     }
 };
 
-module.exports = { getAllContacts, getContactById, createContact, updateContactStatus };
+const deleteContact = async(req, res) => {
+    try {
+        const contact = await Contact.findByIdAndDelete(req.params.id);
+        if (!contact) {
+            return res.status(404).json({ message: 'Contact not found' });
+        }
+        res.json({ message: 'Inquiry deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting contact:', error);
+        res.status(500).json({ message: 'Error deleting contact' });
+    }
+};
+
+module.exports = { getAllContacts, getContactById, createContact, updateContactStatus, deleteContact };

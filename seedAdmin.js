@@ -10,21 +10,22 @@ const seedAdmin = async () => {
         await connectDB();
 
         // Check if admin already exists
-        const adminExists = await Admin.findOne({ username: 'vandana' });
+        let admin = await Admin.findOne({ username: 'trx.in' });
 
-        if (adminExists) {
-            console.log('Admin already exists');
-            process.exit();
+        if (admin) {
+            console.log('Admin already exists. Updating password...');
+            admin.password = 'Krishna@123';
+            await admin.save();
+            console.log('Admin password updated successfully');
+        } else {
+            admin = new Admin({
+                username: 'trx.in',
+                password: 'Krishna@123'
+            });
+            await admin.save();
+            console.log('Admin User Created Successfully');
         }
-
-        const admin = new Admin({
-            username: 'vandana',
-            password: 'vandana24'
-        });
-
-        await admin.save();
-
-        console.log('Admin User Created Successfully');
+        process.exit();
         process.exit();
     } catch (error) {
         console.error(`Error: ${error.message}`);
