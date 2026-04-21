@@ -10,7 +10,7 @@ router.get('/', getAllProjects);
 router.get('/:id', getProjectById);
 
 // Admin only routes
-router.post('/', verifyAdminToken, upload.array('images', 10), createProject);
+router.post('/', verifyAdminToken, upload.array('images', 60), createProject);
 router.put('/:id', verifyAdminToken, updateProject);
 router.delete('/:id', verifyAdminToken, deleteProject);
 

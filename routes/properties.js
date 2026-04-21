@@ -10,7 +10,7 @@ router.get('/', getAllProperties);
 router.get('/:id', getPropertyById);
 
 // Admin only routes
-router.post('/', verifyAdminToken, upload.array('images', 10), createProperty);
+router.post('/', verifyAdminToken, upload.array('images', 60), createProperty);
 router.put('/:id', verifyAdminToken, updateProperty);
 router.delete('/:id', verifyAdminToken, deleteProperty);
 

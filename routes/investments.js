@@ -10,7 +10,7 @@ router.get('/', getAllInvestments);
 router.get('/:id', getInvestmentById);
 
 // Admin only routes
-router.post('/', verifyAdminToken, upload.array('images', 10), createInvestment);
+router.post('/', verifyAdminToken, upload.array('images', 60), createInvestment);
 router.put('/:id', verifyAdminToken, updateInvestment);
 router.delete('/:id', verifyAdminToken, deleteInvestment);
 
