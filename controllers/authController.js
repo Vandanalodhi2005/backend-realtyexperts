@@ -86,6 +86,15 @@ const getDashboard = async(req, res) => {
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
         const recentProperties = await Property.countDocuments({ createdAt: { $gte: thirtyDaysAgo } });
 
+        // Get project breakdown by type
+        const projectsByType = {
+            residential: await Project.countDocuments({ type: 'residential' }),
+            commercial: await Project.countDocuments({ type: 'commercial' }),
+            investment: await Project.countDocuments({ type: 'investment' }),
+            mixed: await Project.countDocuments({ type: 'mixed' }),
+            plot: await Project.countDocuments({ type: 'plot' })
+        };
+
         res.json({
             message: 'Welcome to admin dashboard',
             data: {
@@ -96,6 +105,7 @@ const getDashboard = async(req, res) => {
                 recentProperties,
                 totalInvestments,
                 totalProjects,
+                projectsByType,
                 totalSubmissions,
                 pendingSubmissions,
                 totalGallery,

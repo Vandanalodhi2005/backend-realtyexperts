@@ -9,7 +9,7 @@ const projectSchema = new mongoose.Schema({
     type: {
         type: String,
         required: true,
-        enum: ['residential', 'commercial', 'investment', 'mixed']
+        enum: ['residential', 'commercial', 'investment', 'mixed', 'plot']
     },
     location: {
         type: String,
