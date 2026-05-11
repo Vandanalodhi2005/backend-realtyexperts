@@ -27,6 +27,7 @@ const investmentRoutes = require('./routes/investments');
 const projectRoutes = require('./routes/projects');
 const submittedPropertyRoutes = require('./routes/submittedProperties');
 const galleryRoutes = require('./routes/gallery');
+const teamMemberRoutes = require('./routes/teamMembers');
 
 app.use('/api/admin', authRoutes);
 app.use('/api/properties', propertyRoutes);
@@ -35,6 +36,7 @@ app.use('/api/investments', investmentRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/submitted-properties', submittedPropertyRoutes);
 app.use('/api/gallery', galleryRoutes);
+app.use('/api/team-members', teamMemberRoutes);
 
 app.get('/', (req, res) => {
     res.send('API is running...');
