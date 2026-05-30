@@ -88,11 +88,13 @@ const getDashboard = async(req, res) => {
 
         // Get project breakdown by type
         const projectsByType = {
-            residential: await Project.countDocuments({ type: 'residential' }),
-            commercial: await Project.countDocuments({ type: 'commercial' }),
-            investment: await Project.countDocuments({ type: 'investment' }),
-            mixed: await Project.countDocuments({ type: 'mixed' }),
-            plot: await Project.countDocuments({ type: 'plot' })
+            residential: await Project.countDocuments({ $or: [{ type: 'residential' }, { category: 'residential' }] }),
+            commercial: await Project.countDocuments({ $or: [{ type: 'commercial' }, { category: 'commercial' }] }),
+            investment: await Project.countDocuments({ $or: [{ type: 'investment' }, { category: 'investment' }] }),
+            mixed: await Project.countDocuments({ $or: [{ type: 'mixed' }, { category: 'mixed' }] }),
+            plot: await Project.countDocuments({ $or: [{ type: 'plot' }, { category: 'plot' }] }),
+            resale: await Project.countDocuments({ $or: [{ type: 'resale' }, { category: 'resale' }] }),
+            interior: await Project.countDocuments({ $or: [{ type: 'interior' }, { category: 'interior' }] })
         };
 
         res.json({

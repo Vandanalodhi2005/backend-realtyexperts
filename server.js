@@ -28,6 +28,8 @@ const projectRoutes = require('./routes/projects');
 const submittedPropertyRoutes = require('./routes/submittedProperties');
 const galleryRoutes = require('./routes/gallery');
 const teamMemberRoutes = require('./routes/teamMembers');
+const interiorQueryRoutes = require('./routes/interiorQueries');
+const candidateRoutes = require('./routes/candidates');
 
 app.use('/api/admin', authRoutes);
 app.use('/api/properties', propertyRoutes);
@@ -37,6 +39,8 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/submitted-properties', submittedPropertyRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/team-members', teamMemberRoutes);
+app.use('/api/interior-queries', interiorQueryRoutes);
+app.use('/api/candidates', candidateRoutes);
 
 app.get('/', (req, res) => {
     res.send('API is running...');

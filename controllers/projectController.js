@@ -6,7 +6,9 @@ const getAllProjects = async (req, res) => {
         const { type, status } = req.query;
         let query = {};
 
-        if (type) query.type = type;
+        if (type) {
+            query.$or = [{ type: type }, { category: type }];
+        }
         if (status) query.status = status;
 
         const projects = await Project.find(query).sort({ createdAt: -1 });
