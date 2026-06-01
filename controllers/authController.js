@@ -92,7 +92,7 @@ const getDashboard = async(req, res) => {
             commercial: await Project.countDocuments({ $or: [{ type: 'commercial' }, { category: 'commercial' }] }),
             investment: await Project.countDocuments({ $or: [{ type: 'investment' }, { category: 'investment' }] }),
             mixed: await Project.countDocuments({ $or: [{ type: 'mixed' }, { category: 'mixed' }] }),
-            plot: await Project.countDocuments({ $or: [{ type: 'plot' }, { category: 'plot' }] }),
+            plot: await Project.countDocuments({ $or: [{ type: 'plot & land' }, { category: 'plot & land' }] }),
             resale: await Project.countDocuments({ $or: [{ type: 'resale' }, { category: 'resale' }] }),
             interior: await Project.countDocuments({ $or: [{ type: 'interior' }, { category: 'interior' }] })
         };

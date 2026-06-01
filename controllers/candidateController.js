@@ -7,10 +7,19 @@ exports.submitApplication = async (req, res) => {
     const { fullName, email, mobile, position, experience, location, message } = req.body;
 
     // Validate required fields
-    if (!fullName || !email || !mobile || !position || experience === undefined || !location) {
+    if (!fullName || !email || !mobile || !position || experience === undefined || experience === null || !location) {
       return res.status(400).json({
         success: false,
         message: 'Please provide all required fields',
+      });
+    }
+
+    // Ensure experience is a number
+    const experienceNum = Number(experience);
+    if (isNaN(experienceNum) || experienceNum < 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Experience must be a valid non-negative number',
       });
     }
 
@@ -20,7 +29,7 @@ exports.submitApplication = async (req, res) => {
       email,
       mobile,
       position,
-      experience,
+      experience: experienceNum,
       location,
       message,
     });
@@ -35,7 +44,7 @@ exports.submitApplication = async (req, res) => {
       <p><strong>Mobile:</strong> ${mobile}</p>
       <p><strong>Position:</strong> ${position}</p>
       <p><strong>Location:</strong> ${location}</p>
-      <p><strong>Experience (Years):</strong> ${experience}</p>
+      <p><strong>Experience (Years):</strong> ${experienceNum}</p>
       <p><strong>Message:</strong> ${message || 'N/A'}</p>
       <p><strong>Applied at:</strong> ${new Date().toLocaleString()}</p>
     `;
@@ -49,8 +58,13 @@ exports.submitApplication = async (req, res) => {
       <p>Best regards,<br/>HR Team - The Realty Experts</p>
     `;
 
-    await sendEmail(process.env.ADMIN_EMAIL, 'New Job Application', adminEmailContent);
-    await sendEmail(email, 'Application Received - The Realty Experts', candidateEmailContent);
+    // Send emails without blocking the response
+    sendEmail(process.env.ADMIN_EMAIL, 'New Job Application', adminEmailContent).catch(err => 
+      console.error('Failed to send admin email:', err)
+    );
+    sendEmail(email, 'Application Received - The Realty Experts', candidateEmailContent).catch(err => 
+      console.error('Failed to send candidate email:', err)
+    );
 
     res.status(201).json({
       success: true,
@@ -70,7 +84,7 @@ exports.submitApplication = async (req, res) => {
 // Get all applications (Admin only)
 exports.getAllApplications = async (req, res) => {
   try {
-    const applications = await CandidateInquiry.find().sort({ appliedAt: -1 });
+    const applications = await CandidateInquiry.find().sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -92,7 +106,7 @@ exports.getApplicationsByPosition = async (req, res) => {
   try {
     const { position } = req.params;
 
-    const applications = await CandidateInquiry.find({ position }).sort({ appliedAt: -1 });
+    const applications = await CandidateInquiry.find({ position }).sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,

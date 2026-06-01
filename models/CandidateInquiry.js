@@ -18,15 +18,8 @@ const candidateInquirySchema = new mongoose.Schema(
     },
     position: {
       type: String,
-      enum: [
-        'Sales Executive',
-        'Team Leader',
-        'Graphic Designer Intern (Male)',
-        'Video Editor Intern (Male)',
-        'Content Writer Intern',
-        'Other'
-      ],
       required: true,
+      trim: true,
     },
     experience: {
       type: Number,

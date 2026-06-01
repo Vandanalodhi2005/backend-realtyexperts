@@ -17,14 +17,13 @@ const transporter = nodemailer.createTransport({
  * @param {string} htmlContent - The HTML content/body of the email
  */
 const sendEmailNotification = async (subject, htmlContent) => {
-    // The recipient email specified by the user
-    const recipientEmail = 'viodhi152@gmail.com';
-    
     // Check if configuration exists
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-        console.warn('WARNING: Email notification skipped. EMAIL_USER or EMAIL_PASS not set in .env');
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS || !process.env.ADMIN_EMAIL) {
+        console.warn('WARNING: Email notification skipped. EMAIL_USER, EMAIL_PASS, or ADMIN_EMAIL not set in .env');
         return false;
     }
+
+    const recipientEmail = process.env.ADMIN_EMAIL;
 
     try {
         const mailOptions = {
